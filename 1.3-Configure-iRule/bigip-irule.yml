@@ -1,0 +1,36 @@
+---
+- name: BIG-IP SETUP
+  hosts: lb
+  connection: local
+  gather_facts: false
+  vars:
+    irules: ['irule1', 'irule2']
+
+  tasks:
+    - name: Setup provider
+      ansible.builtin.set_fact:
+        provider:
+          server: "{{ f5_ip_address }}"
+          user: "{{ admin_user }}"
+          password: "{{ admin_password }}"
+          server_port: "{{ f5_admin_port }}"
+          validate_certs: false
+
+    - name: ADD iRules
+      f5networks.f5_modules.bigip_irule:
+        provider: "{{ provider }}"
+        module: "ltm"
+        name: "{{item}}"
+        content: "{{lookup('file','{{item}}')}}"
+      with_items: "{{irules}}"
+
+    - name: ATTACH iRules TO VIRTUAL SERVER
+      f5networks.f5_modules.bigip_virtual_server:
+        provider: "{{ provider }}"
+        name: "vip"
+        irules: "{{irules}}"
+
+    - name: SAVE RUNNING CONFIG ON BIG-IP
+      f5networks.f5_modules.bigip_config:
+        provider: "{{ provider }}"
+        save: true
