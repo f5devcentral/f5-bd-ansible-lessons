@@ -1,5 +1,12 @@
-f5_admin_user: "admin"
-f5_admin_password: "supersecretpassword"
 f5_admin_port: "443"
-file_name: backup_"{{ inventory_hostname }}_{{ ansible_date_time.date }}.ucs
-local_folder_location: "/tmp/"
+file_name: "backup_{{ inventory_hostname }}_{{ ansible_date_time.date }}.ucs"
+local_folder_location: "/awx/f5_backup/"
+
+docker_ports: [3000, 3001, 3002, 3003, 3004]
+vip_name: "JuiceShop-VIP"
+vip_ip: 196.196.196.100
+
+SSL_Cert: app-demo.crt
+SSL_Key: app-demo.key
+
+irules: ['irule1', 'irule2']
