@@ -2,22 +2,22 @@
 - name: BIG-IP SETUP
   hosts: lb
   connection: local
-  gather_facts: false
+  gather_facts: true
 
   tasks:
     - name: Setup provider
       ansible.builtin.set_fact:
         provider:
-          server: "{{ f5_ip_address }}"
-          user: "{{ admin_user }}"
-          password: "{{ admin_password }}"
+          server: "{{ ansible_host }}"
+          user: "{{ f5_admin_user }}"
+          password: "{{ f5_admin_password }}"
           server_port: "{{ f5_admin_port }}"
           validate_certs: false
 
     - name: Download a new UCS
       f5networks.f5_modules.bigip_ucs_fetch:
         src: "{{file_name}}"
-        dest: "{{local_folder_location}}/UseCase-00-backup.ucs"
+        dest: "{{local_folder_location}}/{{file_name}}"
         provider: "{{ provider }}"
       delegate_to: localhost
 

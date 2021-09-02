@@ -3,34 +3,48 @@
   hosts: lb
   connection: local
   gather_facts: false
-  vars:
-    irules: ['irule1', 'irule2']
 
   tasks:
+
     - name: Setup provider
       ansible.builtin.set_fact:
         provider:
-          server: "{{ f5_ip_address }}"
-          user: "{{ admin_user }}"
-          password: "{{ admin_password }}"
+          server: "{{ ansible_host }}"
+          user: "{{ f5_admin_user }}"
+          password: "{{ f5_admin_password }}"
           server_port: "{{ f5_admin_port }}"
           validate_certs: false
+
+    - name: Find Active Machine
+      bigip_command:
+        provider: "{{ provider }}"
+        match: "any"
+        warn: no
+        commands:
+          - bash -c "cat /var/prompt/ps1"
+      register: result
+  
+    - debug:
+        var: result.stdout
 
     - name: ADD iRules
       f5networks.f5_modules.bigip_irule:
         provider: "{{ provider }}"
         module: "ltm"
-        name: "{{item}}"
-        content: "{{lookup('file','{{item}}')}}"
-      with_items: "{{irules}}"
+        name: "{{ item }}"
+        content: "{{ lookup('file','{{ item }}') }}"
+      with_items: "{{ irules }}"
+      when: '"Active" in result.stdout'
 
     - name: ATTACH iRules TO VIRTUAL SERVER
       f5networks.f5_modules.bigip_virtual_server:
         provider: "{{ provider }}"
-        name: "vip"
-        irules: "{{irules}}"
+        name: "{{ vip_name }}"
+        irules: "{{ irules }}"
+      when: '"Active" in result.stdout'
 
     - name: SAVE RUNNING CONFIG ON BIG-IP
       f5networks.f5_modules.bigip_config:
         provider: "{{ provider }}"
         save: true
+      when: '"Active" in result.stdout'

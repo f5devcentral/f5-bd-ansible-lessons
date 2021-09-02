@@ -1,0 +1,5 @@
+f5_admin_user: "admin"
+f5_admin_password: "supersecretpassword"
+f5_admin_port: "443"
+file_name: backup_"{{ inventory_hostname }}_{{ ansible_date_time.date }}.ucs
+local_folder_location: "/tmp/"

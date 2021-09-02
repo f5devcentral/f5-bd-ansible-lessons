@@ -5,40 +5,61 @@
   gather_facts: false
 
   tasks:
+
     - name: Setup provider
       ansible.builtin.set_fact:
         provider:
-          server: "{{private_ip}}"
-          user: "{{ansible_user}}"
-          password: "{{ansible_password}}"
-          server_port: 8443
+          server: "{{ ansible_host }}"
+          user: "{{ f5_admin_user }}"
+          password: "{{ f5_admin_password }}"
+          server_port: "{{ f5_admin_port }}"
           validate_certs: false
+
+    - name: Find Active Machine
+      bigip_command:
+        provider: "{{ provider }}"
+        match: "any"
+        warn: no
+        commands:
+          - bash -c "cat /var/prompt/ps1"
+      register: result
+  
+    - debug:
+        var: result.stdout
 
     - name: DELETE VIRTUAL SERVER
       f5networks.f5_modules.bigip_virtual_server:
-        provider: "{{provider}}"
-        name: "vip"
+        provider: "{{ provider }}"
+        name: "{{ vip_name }}"
         state: absent
+      when: '"Active" in result.stdout'
 
     - name: DELETE POOL
       f5networks.f5_modules.bigip_pool:
-        provider: "{{provider}}"
+        provider: "{{ provider }}"
         name: "http_pool"
         state: absent
+      when: '"Active" in result.stdout'
 
     - name: DELETE NODES
       f5networks.f5_modules.bigip_node:
-        provider: "{{provider}}"
-        name: "{{hostvars[item].inventory_hostname}}"
+        provider: "{{ provider }}"
+        name: "{{ hostvars[item].inventory_hostname }}"
         state: absent
-      loop: "{{ groups['web'] }}"
+      loop: "{{ groups['web_servers'] }}"
+      when: '"Active" in result.stdout'
+
+    - name: DELETE iRules
+      f5networks.f5_modules.bigip_irule:
+        provider: "{{ provider }}"
+        name: "{{ item }}"
+        module: "ltm"
+        state: absent
+      with_items: "{{ irules }}"
+      when: '"Active" in result.stdout'
 
     - name: SAVE RUNNING CONFIG ON BIG-IP
       f5networks.f5_modules.bigip_config:
-        provider:
-          server: "{{private_ip}}"
-          user: "{{ansible_user}}"
-          password: "{{ansible_password}}"
-          server_port: 8443
-          validate_certs: false
+        provider: "{{ provider }}"
         save: true
+      when: '"Active" in result.stdout'

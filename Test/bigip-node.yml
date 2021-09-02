@@ -1,0 +1,13 @@
+---
+- name: BIG-IP SETUP
+  hosts: lb
+  connection: local
+  gather_facts: true
+
+  tasks:
+
+    - debug:
+        var: file_name
+
+
+

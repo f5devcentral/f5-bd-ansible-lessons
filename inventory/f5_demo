@@ -1,0 +1,7 @@
+[lb]
+big-ip-001 ansible_host=195.195.195.21
+big-ip-002 ansible_host=195.195.195.22
+
+[web_servers]
+docker-host-1 ansible_host=199.199.199.157
+docker-host-2 ansible_host=199.199.199.153
