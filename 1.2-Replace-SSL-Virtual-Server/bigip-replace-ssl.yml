@@ -16,7 +16,7 @@
           validate_certs: false
 
     - name: Find Active Machine
-      bigip_command:
+      f5networks.f5_modules.bigip_command:
         provider: "{{ provider }}"
         match: "any"
         warn: no
