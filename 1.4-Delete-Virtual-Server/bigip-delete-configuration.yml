@@ -58,6 +58,27 @@
       with_items: "{{ irules }}"
       when: '"Active" in result.stdout'
 
+    - name: Delete a client SSL profile
+      f5networks.f5_modules.bigip_profile_client_ssl:
+        provider: "{{ provider }}"
+        state: absent
+        name: "{{ vip_name }}_ClientSSL_profile"
+      when: '"Active" in result.stdout'
+
+    - name: SSL cert upload
+      f5networks.f5_modules.bigip_ssl_certificate:
+        provider: "{{ provider }}"
+        name: "{{ SSL_Cert[-4] }}_Cert"
+        state: absent
+      when: '"Active" in result.stdout'
+
+    - name: SSL key upload
+      f5networks.f5_modules.bigip_ssl_key:
+        provider: "{{ provider }}"
+        name: "{{ SSL_Key[-4] }}_Key"
+        state: absent
+      when: '"Active" in result.stdout'
+
     - name: SAVE RUNNING CONFIG ON BIG-IP
       f5networks.f5_modules.bigip_config:
         provider: "{{ provider }}"
