@@ -37,7 +37,7 @@
     - name: DELETE POOL
       f5networks.f5_modules.bigip_pool:
         provider: "{{ provider }}"
-        name: "http_pool"
+        name: "{{ vip_name }}_pool"
         state: absent
       when: '"Active" in result.stdout'
 
