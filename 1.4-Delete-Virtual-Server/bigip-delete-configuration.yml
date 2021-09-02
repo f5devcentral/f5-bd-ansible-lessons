@@ -65,14 +65,14 @@
         name: "{{ vip_name }}_ClientSSL_profile"
       when: '"Active" in result.stdout'
 
-    - name: SSL cert upload
+    - name: Delete SSL Cert
       f5networks.f5_modules.bigip_ssl_certificate:
         provider: "{{ provider }}"
         name: "{{ SSL_Cert[-4] }}_Cert"
         state: absent
       when: '"Active" in result.stdout'
 
-    - name: SSL key upload
+    - name: Delete SSL Key
       f5networks.f5_modules.bigip_ssl_key:
         provider: "{{ provider }}"
         name: "{{ SSL_Key[-4] }}_Key"
