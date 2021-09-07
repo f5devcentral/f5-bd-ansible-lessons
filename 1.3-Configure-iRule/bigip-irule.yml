@@ -36,6 +36,7 @@
       with_items: "{{ irules }}"
       when: 
       - '"Active" in result.stdout'
+      - ssl_file_location is not defined
 
     - name: ADD iRules
       f5networks.f5_modules.bigip_irule:
