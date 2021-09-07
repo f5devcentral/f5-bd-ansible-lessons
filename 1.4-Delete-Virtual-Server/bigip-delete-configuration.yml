@@ -68,14 +68,14 @@
     - name: Delete SSL Cert
       f5networks.f5_modules.bigip_ssl_certificate:
         provider: "{{ provider }}"
-        name: "{{ SSL_Cert[-4] }}_Cert"
+        name: "{{ ssl_cert[-4] }}_cert"
         state: absent
       when: '"Active" in result.stdout'
 
     - name: Delete SSL Key
       f5networks.f5_modules.bigip_ssl_key:
         provider: "{{ provider }}"
-        name: "{{ SSL_Key[-4] }}_Key"
+        name: "{{ ssl_key[-4] }}_key"
         state: absent
       when: '"Active" in result.stdout'
 
