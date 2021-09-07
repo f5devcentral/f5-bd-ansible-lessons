@@ -59,7 +59,7 @@
       f5networks.f5_modules.bigip_ssl_key:
         provider: "{{ provider }}"
         name: "{{ ssl_key[-4] }}_key"
-        content: "{{ lookup('file', ssl_file_location/ssl_key) }}"
+        content: "{{ lookup('file', ssl_file_location + ssl_key) }}"
       when: 
       - '"Active" in result.stdout'
       - ssl_file_location is defined

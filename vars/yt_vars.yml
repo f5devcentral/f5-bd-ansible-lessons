@@ -7,7 +7,7 @@ vip_name: "JuiceShop-VIP"
 vip_ip: 196.196.196.100
 
 #if ssl_file_location defined then will use if commented will use local folder
-ssl_file_location: /awx/
+ssl_file_location: /awx/certs/
 ssl_cert: app-demo.crt
 ssl_key: app-demo.key
 
