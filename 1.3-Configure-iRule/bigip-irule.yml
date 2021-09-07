@@ -34,7 +34,19 @@
         name: "{{ item }}"
         content: "{{ lookup('file','{{ item }}') }}"
       with_items: "{{ irules }}"
-      when: '"Active" in result.stdout'
+      when: 
+      - '"Active" in result.stdout'
+
+    - name: ADD iRules
+      f5networks.f5_modules.bigip_irule:
+        provider: "{{ provider }}"
+        module: "ltm"
+        name: "{{ item }}"
+        content: "{{ lookup('file','{{ item }}') }}"
+      with_items: "{{ irules }}"
+      when: 
+      - '"Active" in result.stdout'
+      - ssl_file_location is defined
 
     - name: ATTACH iRules TO VIRTUAL SERVER
       f5networks.f5_modules.bigip_virtual_server:
