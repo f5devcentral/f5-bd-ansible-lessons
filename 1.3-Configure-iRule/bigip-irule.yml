@@ -42,7 +42,7 @@
         provider: "{{ provider }}"
         module: "ltm"
         name: "{{ item }}"
-        content: "{{ lookup('file','{{ item }}') }}"
+        content: "{{ lookup('file', irule_file_location + '{{ item }}') }}"
       with_items: "{{ irules }}"
       when: 
       - '"Active" in result.stdout'
