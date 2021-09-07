@@ -50,7 +50,7 @@
       f5networks.f5_modules.bigip_ssl_certificate:
         provider: "{{ provider }}"
         name: "{{ ssl_cert[-4] }}_cert"
-        content: "{{ lookup('file', {{ssl_file_location}}/{{ssl_cert}}) }}"
+        content: "{{ lookup('file', ssl_file_location + ssl_cert) }}"
       when: 
       - '"Active" in result.stdout'
       - ssl_file_location is defined
