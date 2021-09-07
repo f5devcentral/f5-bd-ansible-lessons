@@ -6,7 +6,9 @@ docker_ports: [3000, 3001, 3002, 3003, 3004]
 vip_name: "JuiceShop-VIP"
 vip_ip: 196.196.196.100
 
-SSL_Cert: app-demo.crt
-SSL_Key: app-demo.key
+#if ssl_file_location defined then will use if commented will use local folder
+ssl_file_location: /awx/
+ssl_cert: app-demo.crt
+ssl_key: app-demo.key
 
 irules: ['irule1', 'irule2']

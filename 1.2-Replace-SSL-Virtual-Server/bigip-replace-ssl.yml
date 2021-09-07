@@ -31,16 +31,39 @@
     - name: SSL cert upload
       f5networks.f5_modules.bigip_ssl_certificate:
         provider: "{{ provider }}"
-        name: "{{ SSL_Cert[-4] }}_Cert"
-        content: "{{ lookup('file', SSL_Cert) }}"
-      when: '"Active" in result.stdout'
+        name: "{{ ssl_cert[-4] }}_cert"
+        content: "{{ lookup('file', ssl_cert) }}"
+      when: 
+      - '"Active" in result.stdout'
+      - ssl_file_location is not defined
 
     - name: SSL key upload
       f5networks.f5_modules.bigip_ssl_key:
         provider: "{{ provider }}"
-        name: "{{ SSL_Key[-4] }}_Key"
-        content: "{{ lookup('file', SSL_Key) }}"
-      when: '"Active" in result.stdout'
+        name: "{{ ssl_key[-4] }}_key"
+        content: "{{ lookup('file', ssl_key) }}"
+      when: 
+      - '"Active" in result.stdout'
+      - ssl_file_location is not defined
+
+    - name: SSL cert upload
+      f5networks.f5_modules.bigip_ssl_certificate:
+        provider: "{{ provider }}"
+        name: "{{ ssl_cert[-4] }}_cert"
+        content: "{{ lookup('file', ssl_file_location/ssl_cert) }}"
+      when: 
+      - '"Active" in result.stdout'
+      - ssl_file_location is defined
+
+    - name: SSL key upload
+      f5networks.f5_modules.bigip_ssl_key:
+        provider: "{{ provider }}"
+        name: "{{ ssl_key[-4] }}_key"
+        content: "{{ lookup('file', ssl_file_location/ssl_key) }}"
+      when: 
+      - '"Active" in result.stdout'
+      - ssl_file_location is defined
+
 
     - name: Create a client SSL profile with a cert/key/chain setting
       f5networks.f5_modules.bigip_profile_client_ssl:
@@ -48,8 +71,8 @@
         state: present
         name: "{{ vip_name }}_ClientSSL_profile"
         cert_key_chain:
-        - cert: "{{ SSL_Cert[-4] }}_Cert"
-          key: "{{ SSL_Key[-4] }}_Key"
+        - cert: "{{ ssl_cert[-4] }}_cert"
+          key: "{{ ssl_key[-4] }}_key"
       when: '"Active" in result.stdout'
 
     - name: UPDATE A VIRTUAL SERVER
