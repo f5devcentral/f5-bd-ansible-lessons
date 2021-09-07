@@ -36,7 +36,7 @@
       with_items: "{{ irules }}"
       when: 
       - '"Active" in result.stdout'
-      - ssl_file_location is not defined
+      - irule_file_location is not defined
 
     - name: ADD iRules
       f5networks.f5_modules.bigip_irule:
@@ -47,7 +47,7 @@
       with_items: "{{ irules }}"
       when: 
       - '"Active" in result.stdout'
-      - ssl_file_location is defined
+      - irule_file_location is defined
 
     - name: ATTACH iRules TO VIRTUAL SERVER
       f5networks.f5_modules.bigip_virtual_server:
