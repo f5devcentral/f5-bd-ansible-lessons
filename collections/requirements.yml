@@ -1,3 +1,2 @@
 collections:
-    - name: community.vmware
     - name: f5networks.f5_modules
